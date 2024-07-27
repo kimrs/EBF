@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace Eclipse.Domain.Dice;
 
-namespace Eclipse;
-
-public class Dice
+public class Die
 {
     private const int Sides = 6;
     private const int RollsPerShuffle = 72;
     private readonly Random _random;
-    private List<DiceRoll> _rolls;
-    private List<DiceRoll>.Enumerator _rollEnumerator;
+    private List<DieRoll> _rolls;
+    private List<DieRoll>.Enumerator _rollEnumerator;
 
-    public Dice()
+    public Die()
     {
         _random = new Random();
         _rolls = GenerateShuffledRolls();
         _rollEnumerator = _rolls.GetEnumerator();
     }
 
-    private List<DiceRoll> GenerateShuffledRolls() =>
+    private List<DieRoll> GenerateShuffledRolls() =>
         Enumerable.Range(1, Sides)
-            .SelectMany(x => Enumerable.Repeat(new DiceRoll(x), RollsPerShuffle / Sides))
+            .SelectMany(x => Enumerable.Repeat(new DieRoll(x), RollsPerShuffle / Sides))
             .OrderBy(x => _random.Next())
             .ToList();
 
-    public DiceRoll Roll()
+    public DieRoll Roll()
     {
         if (!_rollEnumerator.MoveNext())
         {

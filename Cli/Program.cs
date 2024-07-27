@@ -1,7 +1,10 @@
 ﻿
 // Set up the dependency injection container
 
-using Eclipse;
+using Eclipse.Domain;
+using Eclipse.Domain.Dice;
+using Eclipse.Domain.Ships;
+using Eclipse.Domain.Ships.Parts;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
@@ -11,19 +14,19 @@ ConfigureServices(services);
 var serviceProvider = services.BuildServiceProvider();
 
 // Resolve a SpaceShip instance and use it
-var cannonFactory = serviceProvider.GetRequiredService<CannonFactory>();
 var damage = new Damage(1);
+var die = serviceProvider.GetRequiredService<Die>();
 var cannons = new List<Cannon>()
 {
-    cannonFactory.Create(damage),
-    cannonFactory.Create(damage),
+    new (die, damage),
+    new (die, damage),
 };
-var shipParts = new List<ShipPart>()
+var shipParts = new List<Part>()
 {
-    new ShipPart(
-        new Initiative(1),
-        new Computer(2),
-        new Shield(1),
+    new (
+        Initiative: 1,
+        Computer: 2,
+        Shield: 1,
         Hull: 3
     ),
 };
@@ -31,6 +34,5 @@ var shipParts = new List<ShipPart>()
 
 static void ConfigureServices(IServiceCollection services)
 {
-    services.AddSingleton<Dice>();
-    services.AddSingleton<CannonFactory>();
+    services.AddSingleton<Die>();
 }
