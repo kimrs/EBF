@@ -35,5 +35,15 @@ namespace Eclipse.Test
             rolls.Where(x => x == new DieRoll(5)).Should().HaveCount(24);
             rolls.Where(x => x == new DieRoll(6)).Should().HaveCount(24);
         }
+
+        [Fact]
+        public void FixedDieTest()
+        {
+            var die = new FixedDie([1, 2, 3]);
+            die.Roll().Should().Be((DieRoll)1);
+            die.Roll().Should().Be((DieRoll)2);
+            die.Roll().Should().Be((DieRoll)3);
+            die.Roll().Should().Be((DieRoll)1);
+        }
     }
 }

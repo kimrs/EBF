@@ -3,9 +3,9 @@ using Eclipse.Domain.Ships;
 using Eclipse.Domain.Ships.Events;
 using FluentAssertions;
 
-namespace Eclipse.Test;
+namespace Eclipse.Test.Combats.Attacks;
 
-public class InsufficientlyAttackedTests
+public class InsufficientDamageApplied
 {
     [Fact]
     public void ShipIsOperatingAferInsufficientlyAttacked()

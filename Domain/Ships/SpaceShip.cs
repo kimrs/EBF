@@ -1,12 +1,31 @@
 ﻿using Eclipse.Domain.Dice;
+using Eclipse.Domain.Ships.Commands;
 using Eclipse.Domain.Ships.Events;
 using Eclipse.Domain.Ships.Parts;
 
 namespace Eclipse.Domain.Ships;
 
-public record SpaceShip
+public abstract record SpaceShip
 {
     public static readonly SpaceShip Empty = new Operating();
+    public static SpaceShip Create(List<ShipEvent> events) => events.Aggregate(Empty, Evolve);
+
+    public abstract Attack Attack(DieRoll dieRoll);
+
+    public SpaceShip Handle(Attack attack)
+    {
+        return attack switch
+        {
+            Attack.FromCannon fromCannon => Evolve(
+                spaceShipState: this, 
+                new ShipEvent.WasAttacked(
+                    Damage: fromCannon.Cannons.Sum(x => x.Damage),
+                    fromCannon.Computer,
+                    fromCannon.DieRoll)),
+            _ => this
+        };
+    }
+    
     public static SpaceShip Evolve(SpaceShip spaceShipState, ShipEvent @event)
     {
         if (spaceShipState is not Operating state)
@@ -32,7 +51,6 @@ public record SpaceShip
     public record Operating
         : SpaceShip
     {
-        private readonly List<ShipEvent> _events = [];
         private Initiative Initiative { get; init; } = 0;
         private Computer Computer { get; init; } = 0;
         public Shield Shield { get; private init; } = 0;
@@ -56,10 +74,12 @@ public record SpaceShip
             {
                 Hull = operating.Hull - damage
             };
+
+        public override Attack Attack(DieRoll dieRoll) => new Attack.FromCannon(Computer, Cannons, dieRoll);
     }
 
     public record Destroyed : SpaceShip
     {
-        public Destroyed() { }
+        public override Attack Attack(DieRoll dieRoll) => new Attack.NoAttack();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Eclipse.Domain.Dice;
 
-public record DieRoll
+public record DieRoll : IDie
 {
     public static DieRoll Max = new(6);
     public static DieRoll Min = new(1);

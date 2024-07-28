@@ -16,11 +16,7 @@ var serviceProvider = services.BuildServiceProvider();
 // Resolve a SpaceShip instance and use it
 var damage = new Damage(1);
 var die = serviceProvider.GetRequiredService<Die>();
-var cannons = new List<Cannon>()
-{
-    new (die, damage),
-    new (die, damage),
-};
+var cannons = new List<Cannon>();
 var shipParts = new List<Part>()
 {
     new (
